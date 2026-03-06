@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import { Button } from './ui/button';
 
-
 const slides = [
   {
     image:
@@ -28,33 +27,68 @@ const slides = [
 ];
 
 const MeetingFeatureUI = () => {
-const [currentSlide, setcurrentSlide] = useState(0)
+  const [currentSlide, setCurrentSlide] = useState(0)
 
-const nextSlide=()=>{
-  // let's say current slide is 0, and we have total 3 slides, so next slide should be 1, and if current slide is 2, then next slide should be 0
-  const nextIndes = (currentSlide+1)%slides.length
-  setcurrentSlide(nextIndes)
-}
-const prevSlide=()=>{
-  // let's say current slide is 0, and we have total 3 slides, so next slide should be 1, and if current slide is 2, then next slide should be 0
-  const nextIndes = (currentSlide-1+slides.length)%slides.length
-  setcurrentSlide(nextIndes)
-}
+  const nextSlide = () => {
+    const nextIndex = (currentSlide + 1) % slides.length
+    setCurrentSlide(nextIndex)
+  }
+
+  const prevSlide = () => {
+    const nextIndex = (currentSlide - 1 + slides.length) % slides.length
+    setCurrentSlide(nextIndex)
+  }
+
   return (
-    <div>
-      <div className='w-[50%] h-[calc(100vh-4rem)] flex-1  flex flex-col items-center justify-center'>
+    <div className="w-[50%] h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50 px-8">
+      
+      <div className="text-center max-w-md">
 
+        <img
+          className="h-32 w-32 mx-auto mb-8 transition-all duration-300"
+          src={slides[currentSlide].image}
+          alt={slides[currentSlide].title}
+        />
 
-      <img className='h-24 w-24 mx-auto' src={slides[currentSlide].image} alt={slides[currentSlide].title} />
+        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+          {slides[currentSlide].title}
+        </h1>
 
-    <h1>{slides[currentSlide].title}</h1>
-    <p>{slides[currentSlide].description}</p>
-    <Button onClick={nextSlide}>
-      <span className='text-lg font-bold'>Next</span>
-    </Button>
-    <Button onClick={prevSlide}>
-      <span className='text-lg font-bold'>prev</span>
-    </Button>
+        <p className="mt-4 text-gray-600 leading-relaxed">
+          {slides[currentSlide].description}
+        </p>
+
+        <div className="flex justify-center gap-4 mt-8">
+          <Button
+            variant="outline"
+            onClick={prevSlide}
+            className="px-6"
+          >
+            Prev
+          </Button>
+
+          <Button
+            onClick={nextSlide}
+            className="px-6"
+          >
+            Next
+          </Button>
+        </div>
+
+        {/* Dots indicator */}
+        <div className="flex justify-center gap-2 mt-6">
+          {slides.map((_, index) => (
+            <div
+              key={index}
+              className={`h-2 w-2 rounded-full transition-all ${
+                currentSlide === index
+                  ? "bg-black scale-125"
+                  : "bg-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+
       </div>
     </div>
   )

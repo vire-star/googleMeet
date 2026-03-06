@@ -9,7 +9,7 @@ const page = () => {
      <div className="flex flex-col h-screen">
   <Header />
 
-  <div className="flex flex-1">
+  <div className="flex ">
     <MeetingFunctionUI/>
     <MeetingFeatureUI />
   </div>

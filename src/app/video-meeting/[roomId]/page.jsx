@@ -1,22 +1,17 @@
 'use client'
 import { Button } from '@/components/ui/button'
-// import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt'
-
 import { useSession } from 'next-auth/react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 const page = () => {
-const { data: session, status } = useSession()
+  const { data: session, status } = useSession()
   const { roomId } = useParams()
 
-  const [isMeeting, setIsMeeting] = useState(false) // ✅ add this
+  const [isMeeting, setIsMeeting] = useState(false)
   const containerRef = useRef(null)
-
-  // ✅ yahi define karna hai
   const zegoInstanceRef = useRef(null)
-
   const hasJoined = useRef(false)
 
   const joinMeeting = async (element) => {
@@ -36,8 +31,6 @@ const { data: session, status } = useSession()
     )
 
     const zp = ZegoUIKitPrebuilt.create(kitToken)
-
-    // ✅ now it exists
     zegoInstanceRef.current = zp
 
     zp.joinRoom({
@@ -46,7 +39,8 @@ const { data: session, status } = useSession()
         mode: ZegoUIKitPrebuilt.GroupCall,
       },
     })
-    setIsMeeting(true) // ✅ set this to true when meeting starts
+
+    setIsMeeting(true)
   }
 
   useEffect(() => {
@@ -60,7 +54,6 @@ const { data: session, status } = useSession()
     }
   }, [status])
 
-  // ✅ safe cleanup
   useEffect(() => {
     return () => {
       if (zegoInstanceRef.current) {
@@ -71,47 +64,52 @@ const { data: session, status } = useSession()
   }, [])
 
   const endMeeting = () => {
-  if (zegoInstanceRef.current) {
-    zegoInstanceRef.current.destroy()
-    zegoInstanceRef.current = null
+    if (zegoInstanceRef.current) {
+      zegoInstanceRef.current.destroy()
+      zegoInstanceRef.current = null
+    }
+    setIsMeeting(false)
+    toast.success("Meeting Ended")
   }
 
-  setIsMeeting(false)
-}
   return (
-    <div className='flex flex-col min-h-screen w-full '>
-      <div className={`flex-grow flex flex-col md:flex-row relative ${isMeeting?'h-screen':""}`}>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
 
-        <div ref={containerRef}
-        className='video-container flex-grow'
-        style={{height:isMeeting?'100%':'0px'}}
-        >
+      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden">
 
-        </div>
+        {/* Video Container */}
+        <div
+          ref={containerRef}
+          className={`w-full transition-all duration-300 ${
+            isMeeting ? "h-[75vh]" : "h-0"
+          }`}
+        />
 
-        <div>
-  {
-    isMeeting && (
-      <div className='flex flex-col'>
-        <div className='p-6'>
-          <h2 className='text-2xl font-bold mb-4 text-gray-800 dark:text-white'>
-            Meeting Info
-          </h2>
-          <p className='mb-4 text-gray-600'>
-            Participant - {session?.user?.name || 'Guest'}
-          </p>
+        {/* Bottom Info Panel */}
+        {isMeeting && (
+          <div className="flex items-center justify-between px-8 py-4 border-t bg-gray-50">
+            <div>
+              <p className="text-sm text-gray-500">Room ID</p>
+              <p className="font-medium text-gray-800">{roomId}</p>
+            </div>
 
-          <Button onClick={endMeeting} variant='destructive'>
-            End Meeting
-          </Button>
-        </div>
+            <div>
+              <p className="text-sm text-gray-500">Participant</p>
+              <p className="font-medium text-gray-800">
+                {session?.user?.name || "Guest"}
+              </p>
+            </div>
+
+            <Button
+              onClick={endMeeting}
+              variant="destructive"
+            >
+              End Meeting
+            </Button>
+          </div>
+        )}
+
       </div>
-    )
-  }
-</div>
-
-      </div>
-
     </div>
   )
 }
