@@ -6,13 +6,14 @@ import { signIn } from 'next-auth/react';
 const page = () => {
   const url = process.env.NEXTAUTH_URL
 
-  const handleLogin = async(provider)=>{
-    try {
-      await signIn(provider,{callbackUrl:url})
-    } catch (error) {
-      console.error(error,'Login error')
-    }
+ const handleLogin = async(provider)=>{
+  try {
+    await signIn(provider,{ callbackUrl: "/" })
+  } catch (error) {
+    console.error(error,'Login error')
   }
+}
+
   return (
     <div className='h-screen w-full flex  bg-gradient-to-r from-slate-100 to-slate-300 items-center justify-center'>
       <div className='w-1/2 h-full flex items-center justify-center'>

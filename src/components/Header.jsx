@@ -14,6 +14,7 @@ import { FaSignOutAlt } from 'react-icons/fa'
 const Header = () => {
   const { data: session, status } = useSession()
 
+  console.log(session?.user?.image)
   const handleSignout = () => {
     signOut({ callbackUrl: '/user-auth' })
   }
