@@ -1,25 +1,28 @@
 import { getToken } from "next-auth/jwt";
-import { Ruthie } from "next/font/google";
 import { NextResponse } from "next/server";
 
-export async function middleware(req){
-    const token = await getToken({req,secret:process.env.NEXTAUTH_SECRET})
+export async function middleware(req) {
 
-    // IF USER TRY TO go /user-auth after login
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
-    if(req.nextUrl.pathname==='/user-auth'&&token){
-        return NextResponse.redirect(new URL('/',req.url))
-    }
+  const { pathname } = req.nextUrl;
 
-    // if user try to access home page without login
+  // user logged in but trying to access login page
+  if (pathname === "/user-auth" && token) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
 
-    if(!token && req.nextUrl.pathname!== '/user-auth'){
-        return NextResponse.redirect(new URL('/user-auth', req.url))
-    }
+  // user not logged in and trying to access protected routes
+  if (!token && pathname !== "/user-auth") {
+    return NextResponse.redirect(new URL("/user-auth", req.url));
+  }
 
-    return NextResponse.next()
+  return NextResponse.next();
 }
 
-export const config={
-    matcher:['/','/user-auth']
-}
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
